@@ -1,0 +1,69 @@
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const connectDB = require("./db");
+const Contact = require("./contact.modal");
+const nodemailer = require("nodemailer");
+
+dotenv.config();
+connectDB();
+
+const app = express();
+app.use(cors({
+    origin: ["http://localhost:5173", "*"], // React frontend URL
+    credentials: true,
+}));
+app.use(express.json());
+
+app.get("/", (req, res) => {
+    res.send("Portfolio Backend Running 🚀");
+});
+
+app.post("/contact", async (req, res) => {
+    try {
+        const { firstName, lastName, email, phone, message } = req.body;
+
+        if (!firstName || !email || !message) {
+            return res.status(400).json({
+                success: false,
+                msg: "Please fill required fields"
+            });
+        }
+
+        // Save in MongoDB
+        await Contact.create({ firstName, lastName, email, phone, message });
+
+        // (Optional) Send Email
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS,
+            },
+        });
+
+        await transporter.sendMail({
+            from: email,
+            to: process.env.MAIL_USER,
+            subject: "New Contact Message",
+            html: `
+        <h3>New Portfolio Contact</h3>
+        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || "N/A"}</p>
+        <p><strong>Message:</strong> ${message}</p>
+      `
+        });
+
+        res.json({ success: true, msg: "Message Sent Successfully" });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, msg: "Server Error" });
+    }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server Running on ${PORT}`));
