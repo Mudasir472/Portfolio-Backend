@@ -45,7 +45,7 @@ app.post("/contact", async (req, res) => {
         });
 
         await transporter.sendMail({
-            from: `"Portfolio Contact" <${process.env.MAIL_USER}>`,
+            from: email,
             to: process.env.MAIL_USER,
             replyTo: email,
             subject: "New Contact Message",
