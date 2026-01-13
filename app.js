@@ -71,7 +71,7 @@ app.post("/contact", async (req, res) => {
       </div>
 
       <p style="margin-top:15px;color:#777;font-size:13px;">
-        Sent on: ${new Date().toLocaleString()}
+        Sent on: ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
       </p>
   </div>
   `
