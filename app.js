@@ -48,14 +48,33 @@ app.post("/contact", async (req, res) => {
             from: email,
             to: process.env.MAIL_USER,
             replyTo: email,
-            subject: "New Contact Message",
+            subject: `📬 New Contact Message from ${firstName} ${lastName}`,
             html: `
-        <h3>New Portfolio Contact</h3>
-        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone || "N/A"}</p>
-        <p><strong>Message:</strong> ${message}</p>
-      `
+                <div style="max-width:600px;margin:auto;padding:20px;
+              background:#f8f9fa;border-radius:10px;
+              font-family:Arial,Helvetica,sans-serif;">
+      
+      <h2 style="color:#333;margin-bottom:10px;">
+        New Portfolio Contact
+      </h2>
+      
+      <p style="color:#555;">You received a new contact message from your portfolio.</p>
+
+      <div style="background:white;padding:15px;border-radius:8px;
+                  border:1px solid #ddd;">
+          <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Phone:</strong> ${phone || "N/A"}</p>
+          <p><strong>Message:</strong><br>
+            <span style="white-space:pre-line;">${message}</span>
+          </p>
+      </div>
+
+      <p style="margin-top:15px;color:#777;font-size:13px;">
+        Sent on: ${new Date().toLocaleString()}
+      </p>
+  </div>
+  `
         });
 
         res.json({ success: true, msg: "Message Sent Successfully" });
