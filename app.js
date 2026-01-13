@@ -10,7 +10,7 @@ connectDB();
 
 const app = express();
 app.use(cors({
-    origin: ["http://localhost:5173", "*"], // React frontend URL
+    origin: ["https://portfolio-backend-two-iota.vercel.app", "http://localhost:5173", "*"], // React frontend URL
     credentials: true,
 }));
 app.use(express.json());
